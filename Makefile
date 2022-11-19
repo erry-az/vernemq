@@ -3,6 +3,7 @@ ERLANG_BIN       = $(shell dirname $(shell which erl))
 GIT_VERSION      = $(shell git describe --tags)
 OVERLAY_VARS    ?=
 REBAR ?= $(BASE_DIR)/rebar3
+BUILD_CONF ?= $(BASE_DIR)/_build/default/rel/vernemq/etc/vernemq.conf
 
 $(if $(ERLANG_BIN),,$(warning "Warning: No Erlang found in your path, this will probably not work"))
 
@@ -28,6 +29,8 @@ else
 	cat $(OVERLAY_VARS) >> vars.generated
 endif
 	$(REBAR) $(PROFILE) release
+	grep -v "include conf" $(BUILD_CONF) > $(BUILD_CONF).new
+	mv $(BUILD_CONF).new $(BUILD_CONF)
 
 ##
 ## Developer targets
